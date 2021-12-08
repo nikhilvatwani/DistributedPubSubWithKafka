@@ -1,0 +1,141 @@
+version: "3.1"
+services:
+  mongo:
+    image: mongo
+    ports:
+      - '27018:27017'
+    networks:
+      - mainNetwork
+  broker1:
+    build:
+      dockerfile: Dockerfile
+      context: "./broker1"
+    volumes:
+      - /app/node_modules
+      - ./broker1:/app
+    image: broker1
+    restart: always
+    ports:
+      - "8080:8080"
+    links:
+      - mongo
+    depends_on:
+      - kafka
+    networks:
+      mainNetwork:
+        ipv4_address: 172.20.0.8
+  broker2:
+      build:
+        dockerfile: Dockerfile
+        context: "./broker2"
+      volumes:
+        - /app/node_modules
+        - ./broker2:/app
+      image: broker2
+      restart: always
+      ports:
+        - "8081:8081"
+      links:
+        - mongo
+      depends_on:
+        - kafka
+      networks:
+        mainNetwork:
+            ipv4_address: 172.20.0.7
+  broker3:
+      build:
+        dockerfile: Dockerfile
+        context: "./broker3"
+      volumes:
+        - /app/node_modules
+        - ./broker3:/app
+      image: broker3
+      restart: always
+      ports:
+        - "8082:8082"
+      links:
+        - mongo
+      depends_on:
+        - kafka
+      networks:
+        mainNetwork:
+            ipv4_address: 172.20.0.6      
+  publisher:
+    build:
+      dockerfile: Dockerfile
+      context: "./publisher"
+    volumes:
+      - /app/node_modules
+      - ./publisher:/app
+    image: publisher
+    restart: always
+    ports:
+      - "9001:9001"
+    depends_on:
+      - kafka
+    networks:
+      mainNetwork:
+        ipv4_address: 172.20.0.3
+  clientNode:
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "9000:9000"
+    image: subscriber_node
+    build:
+      dockerfile: Dockerfile
+      context: ./subscriber_node
+    volumes:
+      - /app/node_modules
+      - ./subscriber_node:/app
+    depends_on:
+      - kafka
+    networks:
+        mainNetwork:
+            ipv4_address: 172.20.0.5
+  client:
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "3000:3000"
+    image: subscriber_frontend
+    build:
+      dockerfile: Dockerfile
+      context: ./subscriber_frontend
+    volumes:
+      - /app/node_modules
+      - ./subscriber_frontend:/app
+    networks:
+        mainNetwork:
+            ipv4_address: 172.20.0.4
+  kafka:
+    image: wurstmeister/kafka:2.11-0.11.0.3
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092
+      KAFKA_LISTENERS: INSIDE://:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    ports:
+      - '9092:9092'
+    depends_on:
+      - zookeeper
+    networks:
+        mainNetwork:
+            ipv4_address: 172.20.0.10
+
+  zookeeper:
+    image: zookeeper:3.4
+    ports:
+      - '2181:2181'
+    networks:
+        mainNetwork:
+            ipv4_address: 172.20.0.9
+    
+networks:
+    mainNetwork:
+        external: true
