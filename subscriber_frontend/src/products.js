@@ -24,11 +24,25 @@ export default class Products extends Component {
         const { router, params, location, routes } = this.props
         let userId = 1;
         switch(location.state.user){
-            case "nikhil": userId = 1;
+            case "user1": userId = 1;
             break;
-            case "kunal": userId = 2;
+            case "user2": userId = 2;
             break;
-            case "amit": userId = 3;
+            case "user3": userId = 3;
+            break;
+            case "user4": userId = 4;
+            break;
+            case "user5": userId = 5;
+            break;
+            case "user6": userId = 6;
+            break;
+            case "user7": userId = 7;
+            break;
+            case "user8": userId = 8;
+            break;
+            case "user9": userId = 9;
+            break;
+            case "user10": userId = 10;
             break;
         }
 
@@ -39,6 +53,14 @@ export default class Products extends Component {
         subToBrokerMap.set("1","http://localhost:8080")
         subToBrokerMap.set("2","http://localhost:8081")
         subToBrokerMap.set("3","http://localhost:8082")
+        subToBrokerMap.set("4","http://localhost:8080")
+        subToBrokerMap.set("5","http://localhost:8081")
+        subToBrokerMap.set("6","http://localhost:8082")
+        subToBrokerMap.set("7","http://localhost:8080")
+        subToBrokerMap.set("8","http://localhost:8081")
+        subToBrokerMap.set("9","http://localhost:8082")
+        subToBrokerMap.set("10","http://localhost:8080")
+
         this.Advertise()
         
       }

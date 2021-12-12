@@ -13,9 +13,16 @@ var corsOptions = {
 var map1 = new Map();
 const server = http.createServer(app);
 var subToBrokerMap = new Map();
-subToBrokerMap.set("1","http://172.20.0.8:8080")
-subToBrokerMap.set("2","http://172.20.0.7:8081")
-subToBrokerMap.set("3","http://172.20.0.6:8082")
+subToBrokerMap.set("1","http://localhost:8080")
+subToBrokerMap.set("2","http://localhost:8081")
+subToBrokerMap.set("3","http://localhost:8082")
+subToBrokerMap.set("4","http://localhost:8080")
+subToBrokerMap.set("5","http://localhost:8081")
+subToBrokerMap.set("6","http://localhost:8082")
+subToBrokerMap.set("7","http://localhost:8080")
+subToBrokerMap.set("8","http://localhost:8081")
+subToBrokerMap.set("9","http://localhost:8082")
+subToBrokerMap.set("10","http://localhost:8080")
 const io = socketIo(server, {
     cors: {
       origin: '*',
@@ -43,6 +50,7 @@ io.on("connection", (socket) => {
   console.log("New client connected");
   if (interval) {
     clearInterval(interval);
+
   }
   socket.on("userOnline", (data) => {
         console.log(data)
